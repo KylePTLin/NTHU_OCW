@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_SIZE 500
+
+char content[MAX_SIZE];
+char input[MAX_SIZE];
+
+
+int main()
+{
+
+    fgets(input, MAX_SIZE, stdin);
+    input[strlen(input)-1] = '\0';
+
+    int i=0, j=0, need_to_move=0, k;
+
+    while (input[i] != '\0'){
+        if (input[i] != '/'){
+                if (input[i] == 32 || (input[i] >= 97 && input[i] <=122) || (input[i] >= 65 && input[i] <= 90)){
+
+                    if (need_to_move){
+                        for (k=need_to_move-1; k>=0; k--){
+                            content[j+k+1] = content[j+k];
+                        }
+                    }
+                    content[j] = input[i];
+                    i++;
+                    j++;
+                }
+                else i++;
+
+        }
+        else {
+            if (input[i+1] != 'b' && input[i+1] != 'n' && input[i+1] != 'l' && input[i+1] != 'r') return 0;
+            switch (input[i+1]){ //backspace newline left right
+                case 'b':
+                    i = i + 10;
+                    if (j>0){
+                        j--;
+                        content[j] = '\0';
+                        if (need_to_move){
+                            for (k=0; k<need_to_move; k++){
+                                content[j+k] = content[j+k+1];
+                            }
+                        }
+                    }
+                    break;
+                case 'n':
+                    i = i + 8;
+                    if (need_to_move){
+                        for (k=need_to_move-1; k>=0; k--){
+                            content[j+k+1] = content[j+k];
+                        }
+                    }
+                    content[j]='\n';
+                    j++;
+                    break;
+                case 'l':
+                    i = i + 5;
+                    if (j>0){
+                        j--;
+                        need_to_move++;
+                    }
+                    break;
+                case 'r':
+                    i = i + 6;
+                    if (need_to_move > 0){
+                        j++;
+                        need_to_move--;
+                    }
+                    break;
+            }
+        }
+    }
+    content[j+need_to_move] = '\0';
+
+    printf("%s", content);
+
+    return 0;
+}
+
